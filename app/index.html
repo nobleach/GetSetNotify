@@ -128,16 +128,17 @@
         // bind(pls).to(,"value");
         config.set('someValue', 'Jim');
         // bind(output).to(someList, 'value');
-        function buildDropdown(list) {
+        function buildDropdown(el, list) {
+          var select = document.getElementById(el);
           config.get(list).forEach(function(opt) {
             option = document.createElement('option');
             option.value = opt.value;
             option.text = opt.text;
-            pls.add(option);
+            select.add(option);
           });
         }
         
-        buildDropdown('someList');
+        buildDropdown('photo-layer-select', 'someList');
 
         
         for(var i=0; i<pls.options.length;i++) {
