@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+      body, html {background:#444; text-align:center; padding:50px 0;}
+
+      /* The CSS */
+      span {
+          border-radius:4px;
+          border:2px solid #aaa;
+          padding:3px
+      }
+      select {
+          padding:3px;
+          margin: 0;
+          -webkit-border-radius:4px;
+          -moz-border-radius:4px;
+
+          background: transparent;
+          color:#888;
+          border:none;
+          outline:none;
+          display: inline-block;
+          -webkit-appearance:none;
+          -moz-appearance:none;
+          appearance:none;
+          cursor:pointer;
+          width:200px;
+      }
+
+      /* Targetting Webkit browsers only. FF will show the dropdown arrow with so much padding. */
+      @media screen and (-webkit-min-device-pixel-ratio:0) {
+          select {padding-right:18px}
+      }
+
+      label {position:relative}
+      label:after {
+          content:'>';
+          font:13px "Consolas", monospace;
+          color:#aaa;
+          -webkit-transform:rotate(90deg);
+          -moz-transform:rotate(90deg);
+          -ms-transform:rotate(90deg);
+          transform:rotate(90deg);
+          right:12px; top:2px;
+          padding:0 0 2px;
+
+          position:absolute;
+          pointer-events:none;
+      }
+      label:before {
+          content:'';
+          right:6px; top:0px;
+          width:20px; height:20px;
+          position:absolute;
+          pointer-events:none;
+          display:block;
+      }
+      div#output {
+        margin-top:24px;
+        font-family: helvetica;
+        color:#fff;
+      }
+    </style>
+  </head>
+  <body>
+    <span>
+      <label>
+        <select id="photo-layer-select">
+        </select>
+      </label>
+    </span>
+    <div id="output"></div>
+    <script>
+      // Instead of using data-dojo-config, we're creating a dojoConfig
+      // object *before* we load dojo.js; they're functionally identical,
+      // it's just easier to read this approach with a larger configuration.
+      var dojoConfig = {
+        async: true,
+        // This code registers the correct location of the "demo"
+        // package so we can load Dojo from the CDN whilst still
+        // being able to load local modules
+        packages: [{
+          name: "dbind",
+          location: location.pathname.replace(/\/[^/]*$/, '') + '/js/dbind'
+        },
+        {
+          name: "utils",
+          location: location.pathname.replace(/\/[^/]*$/, '') + '/js/utils'      
+        }
+        ]
+      };
+    </script>
+    <!-- load Dojo -->
+    <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.9.2/dojo/dojo.js"
+            data-dojo-config="async: true"></script>
+    <script type="text/javascript">
+      require(['dojo/on', 'dbind/bind', 'utils/config'], function(on, bind, Config){
+        var pls = document.getElementById('photo-layer-select');
+
+        var config = new Config();
+        window.config = {
+          someValue: 'test',
+          currentSelection: 'ahjdv90s-7s99s-f568sadf9-98766s',
+          someList: [
+            {text:'Green Lakes', value:'js390s-7s99s-f568sadf9-98766s'}, 
+            {text:'Solitude Hill', value:'ahjdv90s-7s99s-f568sadf9-98766s'}, 
+            {text:'Crisp North', value:'js390s-23439s-f568sadf9-98766s'}, 
+            {text:'Crystal Clean', value:'js390s-7sdfs9s-f568sadf9-98766s'}, 
+          ],
+          someDeeperObject: {
+            name: 'test',
+            value: 'testValue'
+          }
+        }
+
+        config.watch(window.config);
+
+        config.on('PropertyChanged', function(evt) {
+          console.log(evt);  
+          if(evt.key === 'someList') {
+            buildDropdown('someList');
+          }
+        });
+
+        // bind(pls).to(,"value");
+        config.set('someValue', 'Jim');
+        // bind(output).to(someList, 'value');
+        function buildDropdown(list) {
+          config.get(list).forEach(function(opt) {
+            option = document.createElement('option');
+            option.value = opt.value;
+            option.text = opt.text;
+            pls.add(option);
+          });
+        }
+        
+        buildDropdown('someList');
+
+        
+        for(var i=0; i<pls.options.length;i++) {
+          var o = pls.options[i];
+          if (o.value == config.get('currentSelection')) {
+            pls.options[i].selected = true;
+          }
+        }        
+
+      });
+    </script>
+  </body>
+
+</html>
